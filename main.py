@@ -46,9 +46,9 @@ class Fish(Image):
 
     def on_touch_down(self, touch):
         if not self.collide_point(*touch.pos):
-            return super().on_touch_down(touch)
+            return False
         if self.opacity == 0:
-            return super().on_touch_down(touch)
+            return False
         
         app = App.get_running_app()
         self.hp_fish -= 1
@@ -61,8 +61,8 @@ class Fish(Image):
         
         if self.hp_fish <= 0:
             self.defeated()
-            if len(app.LEVELS[app.LEVEL]) > self.fish_index + 1:
-                self.fish_index += 1
+            if len(app.LEVELS[app.LEVEL]) > game_screen.ids.fish.fish_index + 1:
+                game_screen.ids.fish.fish_index += 1
                 Clock.schedule_once(self.new_fish, 1.2)
                 #через 1.2с створити нову рибу
             else:
@@ -91,6 +91,7 @@ class Game(Screen):
     
     def level_complete(self, *args):
         self.ids.level_complete.opacity = 1
+        self.score = 0
 
     def go_home(self):
         self.manager.current = 'menu'
