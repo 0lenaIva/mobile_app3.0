@@ -1,0 +1,70 @@
+<Menu>:
+    BoxLayout: 
+        orientation:"vertical"
+        spacing:dp(10)
+        padding: dp(20)
+
+        Label:
+            text: "Clicker"
+            font_size: "32sp"
+
+        Button:
+            text: "Play"
+            on_release: root.go_game()
+        
+        Button:
+            text: "Settings"
+            on_release: root.go_settings()
+        
+        Button:
+            text: "Exit"
+            on_release: root.exit_app()
+
+<Settings>:
+    BoxLayout:
+        orientation: "vertical"
+        spacing: dp(10)
+        padding: dp(20)
+
+        Label:
+            text:"Settings"
+            font_size:"24sp"
+
+        Button:
+            text: "Back"
+            size_hint_y: None
+            height: dp(50)
+            on_release: root.go_menu()
+
+<Fish>:
+    size_hint: None, None
+    size: dp(250), dp(250)
+    pos_hint:{"center_x":0.5, "center_y":0.5}
+    allow_stretch: True
+    keep_ration: True
+
+<Game>:
+    FloatLayout:
+        Label:
+            text:"Score"  + str(root.score)
+            size_hint: 1, None
+            height: dp(50)
+            pos_hint: {"top":1}
+            font_size:"24sp"
+
+        Fish:
+            id:fish
+
+        Label:
+            id: level_complete
+            text:"Level completed!"
+            font_size:"30sp"
+            color:0,1,0,1
+            opacity:0
+            pos_hint:{"center_x":0.5, "center_y":0.75}
+
+        Button:
+            text:"Menu"
+            size_hint:0.3, .08
+            pos_hint:{"x":0.02, "y":0.02}
+            on_release:root.go_home()
