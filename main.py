@@ -49,10 +49,14 @@ class Fish(Image):
             return False
         if self.opacity == 0:
             return False
+        if getattr(self, 'dead', False):
+            return False
         
         app = App.get_running_app()
         self.hp_fish -= 1
+
         game_screen = self.parent
+
         while game_screen and not isinstance(game_screen, Game):
             game_screen = game_screen.parent
 
@@ -60,16 +64,24 @@ class Fish(Image):
             game_screen.score += 1
         
         if self.hp_fish <= 0:
+            self.dead = True
             self.defeated()
-            if len(app.LEVELS[app.LEVEL]) > game_screen.ids.fish.fish_index + 1:
-                game_screen.ids.fish.fish_index += 1
-                Clock.schedule_once(self.new_fish, 1.2)
-                #через 1.2с створити нову рибу
-            else:
-                if game_screen:
-                    Clock.schedule_once(game_screen.level_complete, 1.2)
-                self.fish_index = 0
-        return super().on_touch_down(touch)
+            Clock.schedule_once(lambda dt:self.next_fish(game_screen),0.3)
+        return True
+    def next_fish(self, game_screen):
+        app = App.get_running_app()
+        self.dead = False
+        
+    def next_step(self, game_screen):
+        app = App.get_running_app()
+        self.dead = False
+        self.fish_index = 0
+        if len(app.LEVELS[app.LEVEL])>1:
+            self.fish_index += 1
+            self.new_fish()
+        else:
+            if game_screen:
+                game_screen.level_complete()
     
 class Game(Screen):
     score = NumericProperty(0)
