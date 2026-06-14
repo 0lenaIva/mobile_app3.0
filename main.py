@@ -34,7 +34,7 @@ class Fish(Image):
     fish_index = 0
     hp_fish = 0
 
-    def new_fish(self):
+    def new_fish(self, *args):
         app = App.get_running_app()# силка на додаток
         self.fish_current = app.LEVELS[app.LEVEL][self.fish_index]#витягнути назву риби
         self.source = app.FISHES[self.fish_current]['source']
