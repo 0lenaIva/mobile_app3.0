@@ -1,70 +1,151 @@
-<Menu>:
-    BoxLayout: 
-        orientation:"vertical"
-        spacing:dp(10)
-        padding: dp(20)
+#:import from_hex kivy.utils.get_color_from_hex
+#:import colormap kivy.utils.colormap
 
-        Label:
-            text: "Clicker"
-            font_size: "32sp"
+#:set main_color '#ef852e'
+#:set main_color_dark '#c96e24'
 
-        Button:
-            text: "Play"
-            on_release: root.go_game()
-        
-        Button:
-            text: "Settings"
-            on_release: root.go_settings()
-        
-        Button:
-            text: "Exit"
-            on_release: root.exit_app()
+<Widget>:
+    font_name:r'assets\Lemon-Regular.ttf'
 
-<Settings>:
+<ButtonMenu@Button>:
+    font_size:'56sp'
+    bold:True
+    background_color: 0,0,0,0
+    size_hint: None, None 
+    pos_hint: {'center_x':.5}
+    width: self.texture_size[0] + dp(40)
+
+    canvas.before:
+        Color:
+            rgba: colormap['white']
+        RoundedRectangle: 
+            size: self.size
+            pos: self.pos
+            radius: [self.font_size/4]
+        Color:
+            rgba: from_hex(main_color) if self.state=='normal' else from_hex(main_color_dark)
+        RoundedRectangle: 
+            size:self.size[0] - dp(6), self.size[1] - dp(6)
+            pos:self.pos[0] + dp(3), self.pos[1] + dp(3)
+            radius: [self.font_size/4] 
+
+<ButtonIcon@ButtonMenu>:
+    font_name: r'assets\typicons.ttf'
+
+<MenuScreen>:
     BoxLayout:
-        orientation: "vertical"
-        spacing: dp(10)
-        padding: dp(20)
+        orientation: 'vertical'
+        padding: '30dp'
+        spacing:'20dp'
+        canvas:
+            Rectangle: 
+                source:r'assets\images\back_menu.png'
+                size:dp(600), self.size[1]
+                pos:self.center_x - dp(600) / 2, self.y
+        Widget:
+            size_hint_y: 0.05
+        Label:
+            text:'UNDERWATER\nCLICKER'
+            font_size: '44sp'
+            halign: 'center'
+            size_hint_y:  0.15
+        
+        Image:
+            source:r'assets\images\title.png'
+            allow_stretch: True
+            size_hint_y: 0.5
+        ButtonMenu:
+            text:'PLAY'
+            size_hint_y: 0.15
+            on_press:
+                root.go_game()
+        BoxLayout:
+            size_hint_y: 0.15
+            ButtonIcon:
+                text:'\uE04F'
+                on_press: root.go_settings()
+            Widget:
+            ButtonIcon:
+                text:'\uE121'
+                on_press:app.stop()
+
+<SettingsScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: '30dp'
+        spacing: '20dp'
 
         Label:
-            text:"Settings"
-            font_size:"24sp"
+            text:'SETTINGS'
+            font_size: '40sp'
+        ButtonMenu:
+            text:'Back'
+            size_hint_y: 0.2
+            on_press:
+                root.go_menu()
 
-        Button:
-            text: "Back"
-            size_hint_y: None
-            height: dp(50)
-            on_release: root.go_menu()
-
-<Fish>:
-    size_hint: None, None
-    size: dp(250), dp(250)
-    pos_hint:{"center_x":0.5, "center_y":0.5}
+<Fish>
+    source: r'assets\images\fish_01.png'
+    size_hint: None, None 
+    size: dp(200), dp(200)
     allow_stretch: True
-    keep_ration: True
+    opacity: 0
 
-<Game>:
-    FloatLayout:
-        Label:
-            text:"Score"  + str(root.score)
-            size_hint: 1, None
-            height: dp(50)
-            pos_hint: {"top":1}
-            font_size:"24sp"
+<GameScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: '30dp'
+        spacing: '20dp'
 
-        Fish:
-            id:fish
+        canvas:
+            Rectangle: 
+                source:r'assets\images\back_game.png'
+                pos:self.pos
+                size:self.size 
+        BoxLayout:
+            size_hint_y: 0.12
 
-        Label:
-            id: level_complete
-            text:"Level completed!"
-            font_size:"30sp"
-            color:0,1,0,1
-            opacity:0
-            pos_hint:{"center_x":0.5, "center_y":0.75}
+            Label:
+                text:str(root.score)
+                font_size:'56sp'
+                size_hint_x:0.8
+                pos_hint: {'center_x':1}
+            
+            ButtonIcon:
+                text:'\uE08A'
+                on_press:root.go_home()
+        FloatLayout:
+            size_hint_y: 0.76
+            id:game_window 
 
-        Button:
-            text:"Menu"
-            size_hint:0.3, .08
-            pos_hint:{"x":0.02, "y":0.02}
-            on_release:root.go_home()
+            Label:
+                id:level_title
+                text:'Level easy'
+                font_size:'60sp'
+                size_hint_y: None 
+                height:self.texture_size[1]
+                x:root.width / 2 - self.width / 2
+                y:'130dp'
+            
+            Fish:
+                id:fish 
+                center: root.center
+
+            Label:
+                id: level_complete 
+                text:'Level\ncomplete!'
+                color:from_hex('#12F3AF')
+                font_size:'50sp'
+                size_hint_y: None 
+                height:self.texture_size[1]
+                x:root.width / 2 - self.width / 2
+                y:root.height / 2 - self.height / 2 + dp(100)
+                opacity: 0
+
+        BoxLayout:
+            size_hint_y: 0.12
+            ButtonIcon:
+                text:'\uE04F'
+                pos_hint: {'y':0}
+                on_press:
+                    root.go_settings()
